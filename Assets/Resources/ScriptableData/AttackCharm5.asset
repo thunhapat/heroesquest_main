@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b469fa488de2d6c4dbaf573c52d4ce2f, type: 3}
+  m_Name: AttackCharm5
+  m_EditorClassIdentifier: 
+  Icon: {fileID: -6481872131862838437, guid: c272274634af0a8428200dd9a1c6b17e, type: 3}
+  Name: Attack Charm Lv.5
+  Description: Increase your hero attack power by 10 while in combat.
+  BonusStat:
+    MaxHP: 0
+    Attack: 10
+    Defence: 0
+    MaxHPPerLevel: 0
+    AttackPerLevel: 0
+    DefencePerLevel: 0

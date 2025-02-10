@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b469fa488de2d6c4dbaf573c52d4ce2f, type: 3}
+  m_Name: DefenceCharm1
+  m_EditorClassIdentifier: 
+  Icon: {fileID: -8953393545000777144, guid: 88382ceb0483f974395a51e78d372698, type: 3}
+  Name: Defence Charm Lv.1
+  Description: Increase your hero defence power by 1 while in combat.
+  BonusStat:
+    MaxHP: 0
+    Attack: 0
+    Defence: 1
+    MaxHPPerLevel: 0
+    AttackPerLevel: 0
+    DefencePerLevel: 0

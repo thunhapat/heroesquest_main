@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c1321e19ee6a784ea535b09f9e891df, type: 3}
+  m_Name: GameAssetStore
+  m_EditorClassIdentifier: 
+  Prefabs:
+    Tile: {fileID: 887674887165737051, guid: ea0f8b36489d6ae4da2cddb4b8c7583f, type: 3}
+    Obstacle: {fileID: 887674887165737051, guid: 83bd55016f27dba4691dcf795e4f82e5, type: 3}
+    RandomBox: {fileID: 887674887165737051, guid: f13161fcda80c3447a8420e6ca9787ff, type: 3}
+    HeroKnight: {fileID: 2725176393248750811, guid: 68a31d51bd593814da3f924f8d133202, type: 3}
+    HeroWizard: {fileID: 1154676388691875545, guid: b86782914b3c24140bbaf0ee11cd6d7b, type: 3}
+    HeroRogue: {fileID: 2725176393248750811, guid: ee8ba8d9a7912f64ca6a801b58d73502, type: 3}
+    EnemyKnight: {fileID: 2955425173585085667, guid: 86d377a814be95f4fad8956e4f773ed4, type: 3}
+    EnemyWizard: {fileID: 8545418051783362232, guid: 22418fd48e89fa3488e30bee1b661400, type: 3}
+    EnemyRogue: {fileID: 1666310032770167857, guid: 124463fe12ee3624780d85e7491eb708, type: 3}
+    BattleRing: {fileID: 0}
+  UI:
+    UIBattle: {fileID: 3452358096321253492, guid: d155a97a09b7d0743917433a104e8549, type: 3}
+    UIGameOver: {fileID: 4959679360579240897, guid: cd55c67d20508b94b97c496b426f480a, type: 3}
+    UIPopupConfirm: {fileID: 1402139056926517777, guid: f46579d45392f0e40bbdd672403c7958, type: 3}
+  VFX:
+    VFXAttackHit: {fileID: 7609552175339414830, guid: 3dddc264f43fef04fbae6984645010b2, type: 3}
+    VFXDead: {fileID: 7609552175339414830, guid: 4f45c740b7e930848b16b2b55cd8cde8, type: 3}
+    VFXHeal: {fileID: 7609552175339414830, guid: 3e641cf3cfe511a459dbfccea0dd575a, type: 3}
+  Audios:
+    BGMMain: {fileID: 8300000, guid: ddbc878d0fc9cb74b8aee819c45a02b5, type: 3}
+    BGMInGame: {fileID: 8300000, guid: 50bd606008f0d4f4180c404953100b56, type: 3}
+    BGMBattle: {fileID: 8300000, guid: ab3c59f380e557742b00ddd5b7cd57e2, type: 3}
+    SFXUIClick: {fileID: 8300000, guid: 0072dd13ef3ac4e68ac08295a28df10e, type: 3}
+    SFXAttackHit: {fileID: 8300000, guid: 56703418e3aed4c47a5f6622816b8e41, type: 3}
+    SFXEncounter: {fileID: 8300000, guid: 21c4a490b24ba2045bc815f7626a40ef, type: 3}
+    SFXHeal: {fileID: 8300000, guid: cfce0cea076109f478783201b2a9f57f, type: 3}
+    SFXJump: {fileID: 8300000, guid: 5708d77107cb74dd287928a1b3c2fd33, type: 3}
+    SFXMovementStep: {fileID: 8300000, guid: df7087e4d8a8bb546bc08ce68632903f, type: 3}
