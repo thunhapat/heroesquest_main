@@ -31,6 +31,7 @@ MonoBehaviour:
     VFXAttackHit: {fileID: 7609552175339414830, guid: 3dddc264f43fef04fbae6984645010b2, type: 3}
     VFXDead: {fileID: 7609552175339414830, guid: 4f45c740b7e930848b16b2b55cd8cde8, type: 3}
     VFXHeal: {fileID: 7609552175339414830, guid: 3e641cf3cfe511a459dbfccea0dd575a, type: 3}
+    VFXMoveSuggestion: {fileID: 2536772017496666856, guid: cf2a42d372cd29948883a49b55f9a53d, type: 3}
   Audios:
     BGMMain: {fileID: 8300000, guid: ddbc878d0fc9cb74b8aee819c45a02b5, type: 3}
     BGMInGame: {fileID: 8300000, guid: 50bd606008f0d4f4180c404953100b56, type: 3}

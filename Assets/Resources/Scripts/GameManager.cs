@@ -17,6 +17,8 @@ public class GameManager : MonoSingleton<GameManager>
     Dictionary<Vector2Int, GameObject> _randomBoxesDict = new Dictionary<Vector2Int, GameObject>();
 
     int _levelGoal = 0;
+
+    VFXMoveSuggestion _moveSuggestion;
     #endregion
 
     private void Start()
@@ -262,6 +264,11 @@ public class GameManager : MonoSingleton<GameManager>
         _tileDict = new Dictionary<Vector2Int, GameObject>();
     }
 
+    public void PlayMoveSuggestion()
+    {
+
+    }
+
     /// <summary>
     /// Check if tile at coordinate is occupied by player party member, collectible hero, enemy or obstacle.
     /// </summary>
@@ -342,6 +349,31 @@ public class GameManager : MonoSingleton<GameManager>
         }
 
         return result;
+    }
+
+    public Vector2Int GetOppositeDirection(Vector2Int dir)
+    {
+        if (dir == Vector2Int.up)
+        {
+            return Vector2Int.down;
+        }
+
+        if (dir == Vector2Int.right)
+        {
+            return Vector2Int.left;
+        }
+
+        if (dir == Vector2Int.down)
+        {
+            return Vector2Int.up;
+        }
+
+        if (dir == Vector2Int.left)
+        {
+            return Vector2Int.right;
+        }
+
+        return Vector2Int.zero;
     }
 
     #endregion
@@ -612,6 +644,7 @@ public class GameManager : MonoSingleton<GameManager>
         }
 
     }
+
     public void RotatePlayerPartyFromLast()
     {
         if (_player.CurrentState == PlayerState.Idle)
@@ -714,13 +747,35 @@ public class GameManager : MonoSingleton<GameManager>
     #region Player Input Handle
     public void OnPlayerInputDirectionalKey(Vector2Int direction)
     {
-        _player.MovePartyLine(direction);
+        if (_player.CurrentState == PlayerState.GameOver) return;
+
+        Vector2Int oppositeDir = GetOppositeDirection(_player.LastDirection);
+
+        if (direction == oppositeDir)
+        {
+            //Play Move Suggestion
+            if (_moveSuggestion == null)
+            {
+                _moveSuggestion = GameAssetStore.Instance.VFX.VFXMoveSuggestion.GetFromPool().GetComponent<VFXMoveSuggestion>();
+            }
+
+            List<Vector2Int> possibleDirection = new List<Vector2Int>() { Vector2Int.down, Vector2Int.left, Vector2Int.right, Vector2Int.up };
+            possibleDirection.Remove(oppositeDir);
+
+            _moveSuggestion.PlayArrowSuggestion(possibleDirection);
+            _moveSuggestion.transform.position = _player.GetPartyLeader().transform.position;
+        }
+        else
+        {
+            _player.MovePartyLine(direction);
+        }
     }
 
     public void OnPlayerInputRotateFromLast()
     {
         RotatePlayerPartyFromLast();
     }
+
     public void OnPlayerInputRotateToLast()
     {
         RotatePlayerPartyToLast();

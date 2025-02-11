@@ -9,6 +9,7 @@ public class Player
     public int Level { get { return _level; } }
     public List<CombatCharacter> PartyMembers { get { return _partyMembers; } }
     public CharmData Charm { get { return _charm; } }
+    public Vector2Int LastDirection { get { return _lastDirection; } }
 
     int _level;
     List<CombatCharacter> _partyMembers;
@@ -161,12 +162,12 @@ public class Player
 
             //Move Leader
             _currentState = PlayerState.Moving;
-            MovePartyMember(partyLeader, targetCoord, false, 
-                ()=> 
-                {
-                    _currentState = PlayerState.Idle;
-                    GameManager.Instance.TriggerEventAtCoord(targetCoord); 
-                });
+            MovePartyMember(partyLeader, targetCoord, false,
+            () =>
+            {
+                _currentState = PlayerState.Idle;
+                GameManager.Instance.TriggerEventAtCoord(targetCoord);
+            });
         }
     }
 
@@ -205,10 +206,10 @@ public class Player
         }
 
         //Player can't go opposite direction of last moved direction.
-        if ((_lastDirection == Vector2Int.up && targetDirection == Vector2.down) ||
-            (_lastDirection == Vector2Int.down && targetDirection == Vector2.up) ||
-            (_lastDirection == Vector2Int.left && targetDirection == Vector2.right) ||
-            (_lastDirection == Vector2Int.right && targetDirection == Vector2.left))
+        if ((_lastDirection == Vector2Int.up && targetDirection == Vector2Int.down) ||
+            (_lastDirection == Vector2Int.down && targetDirection == Vector2Int.up) ||
+            (_lastDirection == Vector2Int.left && targetDirection == Vector2Int.right) ||
+            (_lastDirection == Vector2Int.right && targetDirection == Vector2Int.left))
         {
             return false;
         }

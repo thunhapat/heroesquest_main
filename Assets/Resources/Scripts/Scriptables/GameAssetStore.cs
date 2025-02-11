@@ -40,6 +40,7 @@ public class GameAssetStore : ScriptableSingleton<GameAssetStore>
         public GameObject VFXAttackHit;
         public GameObject VFXDead;
         public GameObject VFXHeal;
+        public GameObject VFXMoveSuggestion;
     }
 
     [System.Serializable]

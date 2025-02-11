@@ -33,8 +33,7 @@ public class CombatCharacter : MonoBehaviour
 
     private void OnDisable()
     {
-        //Reset changes done by animator.
-        Anim.Play("Character_Default", 0, 0f);
+
     }
 
     public void SetCurrentCoordinate(Vector2Int coord)
