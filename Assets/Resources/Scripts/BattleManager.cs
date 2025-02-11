@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class BattleManager : MonoBehaviour
+public class BattleManager : MonoSingleton<BattleManager>
 {
     [Header("Object References")]
     [SerializeField] Transform DummyHeroParent;
@@ -19,22 +19,6 @@ public class BattleManager : MonoBehaviour
     CharmData _playerCharm;
 
     Coroutine _battleCoroutine;
-
-    #region Singleton
-    private static BattleManager _instance;
-
-    public static BattleManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = FindFirstObjectByType<BattleManager>();
-            }
-            return _instance;
-        }
-    }
-    #endregion
 
     public void InitBattle(Player player, CombatCharacter enemy, UnityAction<bool> onBattleComplete)
     {
@@ -57,6 +41,7 @@ public class BattleManager : MonoBehaviour
     {
         CombatCharacter newDummy = GameManager.Instance.CreateCharacterObjByClass(charClass, isEnemy);
         ChangeLayerInChildren(newDummy.gameObject, 3); //Battle Layer
+        newDummy.SetParty(!isEnemy);
         newDummy.transform.SetParent(parent);
         newDummy.CharSprite.localScale = Vector3.one;
         newDummy.transform.localPosition = Vector3.zero;
@@ -130,10 +115,7 @@ public class BattleManager : MonoBehaviour
 
         //Create all combatants
         _dummyHero = CreateDummyCharacter(DummyHeroParent, _hero.Data.CharacterClass, false);
-        _dummyHero.Anim.SetTrigger("Entrance");
-
         _dummyEnemy = CreateDummyCharacter(DummyEnemyParent, _enemy.Data.CharacterClass, true);
-        _dummyEnemy.Anim.SetTrigger("Entrance");
 
         yield return new WaitForSeconds(1f); //Start Delay
 
@@ -184,7 +166,6 @@ public class BattleManager : MonoBehaviour
                 UIBattle.Instance.Init(_hero, _enemy, _playerCharm);
 
                 _dummyHero = CreateDummyCharacter(DummyHeroParent, _hero.Data.CharacterClass, false);
-                _dummyHero.Anim.SetTrigger("Entrance");
 
                 yield return new WaitForSeconds(1f); //Wait for entrance animation
             }

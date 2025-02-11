@@ -1,24 +1,8 @@
 using UnityEngine;
 
-public class AudioManager : MonoBehaviour
+public class AudioManager : MonoSingleton<AudioManager>
 {
     [SerializeField] AudioSource _mainAudioSource;
-
-    #region Singleton
-    private static AudioManager _instance;
-
-    public static AudioManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = FindFirstObjectByType<AudioManager>();
-            }
-            return _instance;
-        }
-    }
-    #endregion
 
     void Awake()
     {

@@ -1,26 +1,31 @@
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class GameObjectPool
+public static class GameObjectExtension
 {
-    private static Dictionary<string, Queue<GameObject>> poolDict = new Dictionary<string, Queue<GameObject>>();
-    private static Dictionary<string, string> poolMapDict = new Dictionary<string, string>();
+    private static Dictionary<string, List<GameObject>> _poolDict = new Dictionary<string, List<GameObject>>();
+    private static Dictionary<GameObject, string> _poolMapDict = new Dictionary<GameObject, string>();
 
     public static GameObject GetFromPool(this GameObject prefab, Transform parent = null)
     {
         string prefabKey = prefab.GetInstanceID().ToString();
 
-        if (!poolDict.ContainsKey(prefabKey))
+        if (!_poolDict.ContainsKey(prefabKey))
         {
-            poolDict.Add(prefabKey, new Queue<GameObject>());
+            _poolDict.Add(prefabKey, new List<GameObject>());
         }
 
         GameObject poolObj = null;
-        if(poolDict.ContainsKey(prefabKey) && poolDict[prefabKey].Count > 0)
+        if(_poolDict.ContainsKey(prefabKey))
         {
-            Queue<GameObject> pool = poolDict[prefabKey];
-            poolObj = pool.Dequeue();
-            poolObj.transform.SetParent(parent);
+            List<GameObject> selectedPool = _poolDict[prefabKey];
+            if (selectedPool.Count > 0)
+            {
+                poolObj = selectedPool.First();
+                selectedPool.Remove(poolObj);
+                poolObj.transform.SetParent(parent);
+            }
         }
 
         if(poolObj == null)
@@ -28,8 +33,7 @@ public static class GameObjectPool
             poolObj = GameObject.Instantiate(prefab, parent);
         }
 
-        string poolInstanceID = poolObj.GetInstanceID().ToString();
-        poolMapDict.Add(poolInstanceID, prefabKey);
+        _poolMapDict.Add(poolObj, prefabKey);
         poolObj.SetActive(true);
 
         return poolObj;
@@ -44,21 +48,22 @@ public static class GameObjectPool
 
     public static void ReturnToPool(this GameObject poolObj)
     {
-        string key = poolObj.GetInstanceID().ToString();
-
-        if (poolMapDict.ContainsKey(key))
+        if (_poolMapDict.ContainsKey(poolObj))
         {
-            string poolKey = poolMapDict[key];
+            string poolKey = _poolMapDict[poolObj];
 
-            poolMapDict.Remove(key);
+            _poolMapDict.Remove(poolObj);
 
-            if (poolDict.ContainsKey(poolKey))
+            if (_poolDict.ContainsKey(poolKey))
             {
-                Queue<GameObject> pool = poolDict[poolKey];
+                //Return to selected pool.
+                List<GameObject> selectedPool = _poolDict[poolKey];
+                selectedPool.Add(poolObj);
+
+                //Hide poolObj
                 poolObj.transform.SetParent(null);
                 poolObj.transform.localScale = Vector3.one;
                 poolObj.SetActive(false);
-                pool.Enqueue(poolObj);
 
                 return;
             }

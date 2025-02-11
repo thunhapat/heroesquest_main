@@ -87,7 +87,7 @@ public class Player
         newMember.SetParty(true);
     }
 
-    public void RemovePartyMember(CombatCharacter partyMember, bool shiftParty = true)
+    public void RemovePartyMember(CombatCharacter partyMember, bool shiftParty = true, bool isInstantMove = false)
     {
         if (!IsMemberInParty(partyMember))
         {
@@ -96,10 +96,8 @@ public class Player
 
         if(shiftParty)
         {
-            //_lastSlotInLine = _partyMembers.Values.ToList().Last();
-
             int shiftIndex = _partyMembers.IndexOf(partyMember);
-            ShiftPartyLine(shiftIndex);
+            ShiftPartyLine(shiftIndex, isInstantMove);
         }
 
         _partyMembers.Remove(partyMember);
@@ -113,7 +111,7 @@ public class Player
         for (int i = 0; i < _partyMembers.Count - 1; i++)
         {
             Vector2Int moveToCoord = _partyMembers[i + 1].CurrentCoordinate;
-            MovePartyMember(_partyMembers[i], moveToCoord);
+            MovePartyMember(_partyMembers[i], moveToCoord, true);
         }
 
         _partyMembers.Remove(lastMember);
@@ -125,7 +123,7 @@ public class Player
     {
         CombatCharacter firstMember = _partyMembers.First();
         Vector2Int lastMemberCoord = _partyMembers.Last().CurrentCoordinate;
-        RemovePartyMember(firstMember);
+        RemovePartyMember(firstMember, true, true);
         AddPartyMember(firstMember, lastMemberCoord);
     }
 
@@ -172,12 +170,12 @@ public class Player
         }
     }
 
-    public void ShiftPartyLine(int stopAt = 0)
+    public void ShiftPartyLine(int stopAt = 0, bool isInstantMove = false)
     {
         for (int i = _partyMembers.Count - 1; i > stopAt; i--)
         {
             Vector2Int moveToCoord = _partyMembers[i - 1].CurrentCoordinate;
-            MovePartyMember(_partyMembers[i], moveToCoord);
+            MovePartyMember(_partyMembers[i], moveToCoord, isInstantMove);
         }
     }
 

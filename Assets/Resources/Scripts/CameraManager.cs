@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraManager : MonoBehaviour
+public class CameraManager : MonoSingleton<CameraManager>
 {
     [SerializeField] float FollowSpeed;
 
@@ -10,22 +10,6 @@ public class CameraManager : MonoBehaviour
     Transform _focusTarget;
     Coroutine _cameraFollow;
     bool _initialized = false;
-
-    #region Singleton
-    private static CameraManager _instance;
-
-    public static CameraManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = FindFirstObjectByType<CameraManager>();
-            }
-            return _instance;
-        }
-    }
-    #endregion
 
     public void InitCamera()
     {

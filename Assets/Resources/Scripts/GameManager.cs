@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Collections;
 
-public class GameManager : MonoBehaviour
+public class GameManager : MonoSingleton<GameManager>
 {
     [Header("Object References")]
     [SerializeField] Transform BoardParent;
@@ -17,22 +17,6 @@ public class GameManager : MonoBehaviour
     Dictionary<Vector2Int, GameObject> _randomBoxesDict = new Dictionary<Vector2Int, GameObject>();
 
     int _levelGoal = 0;
-    #endregion
-
-    #region Singleton
-    private static GameManager _instance;
-
-    public static GameManager Instance
-    {
-        get
-        {
-            if (_instance == null)
-            {
-                _instance = FindFirstObjectByType<GameManager>();
-            }
-            return _instance;
-        }
-    }
     #endregion
 
     private void Start()
@@ -208,6 +192,7 @@ public class GameManager : MonoBehaviour
                             {
                                 _combatCharactersDict.Remove(combatChar);
                                 combatChar.gameObject.ReturnToPool();
+
                                 _levelGoal--;
 
                                 CheckLevelComplete();
@@ -232,68 +217,10 @@ public class GameManager : MonoBehaviour
         }
         else if (_randomBoxesDict.ContainsKey(targetCoord))
         {
-            _player.SetPlayerState(PlayerState.PickingBox);
-
             _randomBoxesDict[targetCoord].ReturnToPool();
             _randomBoxesDict.Remove(targetCoord);
 
-            ScriptableObject reward = RandomBox.GetRandomReward(GameSetting.Instance.RandomBoxChance);
-
-            if(reward is CharmData)
-            {
-                CharmData charm = reward as CharmData;
-
-                UIPopupConfirm.Open(
-                    charm,
-                    "You've got an item!"+System.Environment.NewLine
-                    +"Would you like to equip now?"+ System.Environment.NewLine
-                    + "(Equiped Item will be destroyed.)",
-                    "Equip",
-                    "Discard",
-                    () =>
-                    {
-                        _player.EquipCharm(charm);
-
-                        UpdateMainUI();
-
-                        _player.SetPlayerState(PlayerState.Idle);
-                    },
-                    () => 
-                    {
-                        _player.SetPlayerState(PlayerState.Idle);
-                    }
-                    );
-            }
-            else if (reward is PotionData)
-            {
-                PotionData potion = reward as PotionData;
-
-                UIPopupConfirm.Open(
-                    potion,
-                    "You've got an item!" + System.Environment.NewLine
-                    + "Would you like to use now?" + System.Environment.NewLine
-                    + "(This item cannot be saved for later use.)",
-                    "Use",
-                    "Discard",
-                    () =>
-                    {
-                        GameAssetStore.Instance.Audios.SFXHeal.PlaySFXOneShot();
-                        GameAssetStore.Instance.VFX.VFXHeal.GetFromPool(GetTile(targetCoord).transform.position);
-
-                        foreach (var combatChar in _player.PartyMembers)
-                        {
-                            combatChar.OnTakeHeal(potion.RecoverAmount);
-                        }
-
-                        UpdateMainUI();
-
-                        _player.SetPlayerState(PlayerState.Idle);
-                    },
-                    () => {
-                        _player.SetPlayerState(PlayerState.Idle);
-                    }
-                    );
-            }
+            TriggerRandomBox();
         }
     }
 
@@ -426,7 +353,7 @@ public class GameManager : MonoBehaviour
         CombatCharacterClass charClass = RandomCharacterClass();
         CombatCharacter combatChar = CreateCharacterObjByClass(charClass, isEnemy);
         combatChar.InitCombatCharacter(charClass, coord, !isEnemy);
-        combatChar.Data.SetLevel(_player.Level);
+        combatChar.Data.SetLevel(_player.Level, true);
 
         _combatCharactersDict.Add(combatChar, coord);
 
@@ -526,6 +453,69 @@ public class GameManager : MonoBehaviour
 
         _obstaclesDict.Add(randomedCoord, newObstacle);
     }
+
+    public void TriggerRandomBox()
+    {
+        _player.SetPlayerState(PlayerState.PickingBox);
+
+        ScriptableObject reward = RandomBox.GetRandomReward(GameSetting.Instance.RandomBoxChance);
+
+        if (reward is CharmData)
+        {
+            CharmData charm = reward as CharmData;
+
+            UIPopupConfirm.Open(
+                charm,
+                "You've got an item!" + System.Environment.NewLine
+                + "Would you like to equip now?" + System.Environment.NewLine
+                + "(Equiped Item will be destroyed.)",
+                "Equip",
+                "Discard",
+                () =>
+                {
+                    _player.EquipCharm(charm);
+
+                    UpdateMainUI();
+
+                    _player.SetPlayerState(PlayerState.Idle);
+                },
+                () =>
+                {
+                    _player.SetPlayerState(PlayerState.Idle);
+                }
+                );
+        }
+        else if (reward is PotionData)
+        {
+            PotionData potion = reward as PotionData;
+
+            UIPopupConfirm.Open(
+                potion,
+                "You've got an item!" + System.Environment.NewLine
+                + "Would you like to use now?" + System.Environment.NewLine
+                + "(This item cannot be saved for later use.)",
+                "Use",
+                "Discard",
+                () =>
+                {
+                    GameAssetStore.Instance.Audios.SFXHeal.PlaySFXOneShot();
+                    GameAssetStore.Instance.VFX.VFXHeal.GetFromPool(GetTile(_player.GetPartyLeader().CurrentCoordinate).transform.position);
+
+                    foreach (var combatChar in _player.PartyMembers)
+                    {
+                        combatChar.OnTakeHeal(potion.RecoverAmount);
+                    }
+
+                    UpdateMainUI();
+
+                    _player.SetPlayerState(PlayerState.Idle);
+                },
+                () => {
+                    _player.SetPlayerState(PlayerState.Idle);
+                }
+                );
+        }
+    }
     #endregion
 
     #region Random Box methods.
@@ -601,6 +591,7 @@ public class GameManager : MonoBehaviour
 
         CombatCharacter partyLeader = _player.GetPartyLeader();
         _player.RemovePartyMember(partyLeader, false);
+        _combatCharactersDict.Remove(partyLeader);
         partyLeader.gameObject.ReturnToPool();
 
         //Try getting party leader again

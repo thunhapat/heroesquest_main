@@ -49,7 +49,7 @@ public class CombatCharacter : MonoBehaviour
 
     public void OnLevelUp(int level)
     {
-        _data.SetLevel(level++);
+        _data.SetLevel(level++, GameSetting.Instance.IsRecoverHpWhenLevelUp);
     }
 
     public void OnTakeDamage(int damage)
@@ -154,10 +154,10 @@ public class CombatCharacterData
         _remainingHP = hp;
     }
 
-    public void SetLevel(int level)
+    public void SetLevel(int level, bool isRecoverHP = false)
     {
         _level = level;
-        RecalculateStats();
+        RecalculateStats(isRecoverHP);
     }
 
     public void RecalculateStats(bool isRecoverHP = false)
