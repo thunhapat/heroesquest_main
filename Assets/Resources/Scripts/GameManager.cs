@@ -148,7 +148,7 @@ public class GameManager : MonoSingleton<GameManager>
             defence += _player.Charm.BonusStat.Defence;
         }
 
-        UIMain.Instance.UpdateUIMain(partyLeader.Data.CharacterClass.ToString(), hpRatio, attack.ToString(), defence.ToString(), _player.Charm);
+        UIMain.Instance.UpdateUIMain(partyLeader.Data.CharacterClass.ToString(), partyLeader.Data.Level, hpRatio, attack.ToString(), defence.ToString(), _player.Charm);
     }
 
     public void TriggerEventAtCoord(Vector2Int targetCoord)

@@ -7,6 +7,8 @@ public class UIBattle : UIPage<UIBattle>
     [SerializeField] UIBattleInfo UI_InfoHero;
     [SerializeField] UIBattleInfo UI_InfoEnemy;
     [SerializeField] RawImage UI_BattleProjection;
+    [SerializeField] VFXDamageNumber HeroDamage;
+    [SerializeField] VFXDamageNumber EnemyDamage;
 
     public static void Open(CombatCharacter hero, CombatCharacter enemy, CharmData charm = null)
     {
@@ -34,6 +36,21 @@ public class UIBattle : UIPage<UIBattle>
     {
         UI_InfoHero.UpdateHPBar();
         UI_InfoEnemy.UpdateHPBar();
+    }
+    
+    public void PlayDamageTextOnHero(int damage, bool isCrit)
+    {
+        PlayDamageText(HeroDamage, damage, isCrit);
+    }
+
+    public void PlayDamageTextOnEnemy(int damage, bool isCrit)
+    {
+        PlayDamageText(EnemyDamage, damage, isCrit);
+    }
+
+    void PlayDamageText(VFXDamageNumber dmgText, int damage, bool isCrit)
+    {
+        dmgText?.PlayDamageText(damage, isCrit);
     }
 
     public void Close()

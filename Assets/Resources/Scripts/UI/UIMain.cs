@@ -17,9 +17,9 @@ public class UIMain : UIPage<UIMain>
         UIParent.SetActive(isShow);
     }
 
-    public void UpdateUIMain(string charClass, float hpRatio, string attack, string defence, CharmData charm)
+    public void UpdateUIMain(string charClass, int level, float hpRatio, string attack, string defence, CharmData charm)
     {
-        TXT_Class.text = charClass;
+        TXT_Class.text = $"{charClass} Lv.{level}";
         TXT_Attack.text = attack;
         TXT_Defence.text = defence;
 

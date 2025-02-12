@@ -20,6 +20,12 @@ public class BattleManager : MonoSingleton<BattleManager>
 
     Coroutine _battleCoroutine;
 
+    /// <summary>
+    /// Initialize battle info and then start battle
+    /// </summary>
+    /// <param name="player">Player data</param>
+    /// <param name="enemy">Enemy combat character that player is fighting</param>
+    /// <param name="onBattleComplete">Called when battle is over.</param>
     public void InitBattle(Player player, CombatCharacter enemy, UnityAction<bool> onBattleComplete)
     {
         _player = player;
@@ -65,18 +71,33 @@ public class BattleManager : MonoSingleton<BattleManager>
         }
     }
 
+    /// <summary>
+    /// Resolve battle damage, decrease HP of both combatant at the same time.
+    /// </summary>
     void ResolveBattleDamage()
     {
         BasicStat charmStat = _playerCharm != null ? _playerCharm.BonusStat : new BasicStat();
 
-        float damageToEnemy = CalculateDamage(_hero, _enemy, charmStat, new BasicStat());
-        float damageToHero = CalculateDamage(_enemy, _hero, new BasicStat(), charmStat);
+        (float damage, bool isCrit) damageToEnemy = CalculateDamage(_hero, _enemy, charmStat, new BasicStat());
+        (float damage, bool isCrit) damageToHero = CalculateDamage(_enemy, _hero, new BasicStat(), charmStat);
 
-        _enemy.OnTakeDamage(Mathf.CeilToInt(damageToEnemy));
-        _hero.OnTakeDamage(Mathf.CeilToInt(damageToHero));
+
+        _hero.OnTakeDamage(Mathf.CeilToInt(damageToHero.damage));
+        UIBattle.Instance.PlayDamageTextOnHero(Mathf.CeilToInt(damageToHero.damage), damageToHero.isCrit);
+
+        _enemy.OnTakeDamage(Mathf.CeilToInt(damageToEnemy.damage));
+        UIBattle.Instance.PlayDamageTextOnEnemy(Mathf.CeilToInt(damageToEnemy.damage), damageToEnemy.isCrit);
     }
 
-    float CalculateDamage(CombatCharacter attacker, CombatCharacter defender, BasicStat attackerBonusStat, BasicStat defenderBonusStat)
+    /// <summary>
+    /// Calculate damage done by combat character.
+    /// </summary>
+    /// <param name="attacker">Attacker</param>
+    /// <param name="defender">Defender</param>
+    /// <param name="attackerBonusStat">Stat bonus for attacker</param>
+    /// <param name="defenderBonusStat">Stat bonus for defender</param>
+    /// <returns>Damage dealt by attacker to defeder</returns>
+    (float, bool) CalculateDamage(CombatCharacter attacker, CombatCharacter defender, BasicStat attackerBonusStat, BasicStat defenderBonusStat)
     {
         //Calculate stat 
         float attacker_Atk = attacker.Data.Attack + attackerBonusStat.Attack;
@@ -84,17 +105,21 @@ public class BattleManager : MonoSingleton<BattleManager>
 
         float totalDamage = attacker_Atk - defender_Def;
 
+        bool isCritical = GameManager.Instance.IsClassAdvantage(attacker, defender);
         //Checking class advantage
-        if (GameManager.Instance.IsClassAdvantage(attacker, defender))
+        if (isCritical)
         {
             totalDamage *= GameSetting.Instance.AdvantageDamageMultiplier;
         }
         //Check if its minimum damage.
         totalDamage = Mathf.Clamp(totalDamage, GameSetting.Instance.MinumumDamage, totalDamage);
 
-        return totalDamage;
+        return (totalDamage, isCritical);
     }
 
+    /// <summary>
+    /// Complete battle, hide all battle ui and return all gameObject to pool.
+    /// </summary>
     void BattleDone()
     {
         //Return all dummy game obj to pool
@@ -107,6 +132,11 @@ public class BattleManager : MonoSingleton<BattleManager>
 
     }
 
+    /// <summary>
+    /// Coroutine that control battle from start to end.
+    /// </summary>
+    /// <param name="onBattleComplete">Called when battle is over</param>
+    /// <returns></returns>
     IEnumerator BattleCoroutine(UnityAction<bool> onBattleComplete)
     {
         bool isPlayerWin = false;

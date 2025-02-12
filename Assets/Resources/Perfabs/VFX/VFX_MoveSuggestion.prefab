@@ -9679,7 +9679,7 @@ GameObject:
   - component: {fileID: 3218204278188746298}
   - component: {fileID: 2373061283432544694}
   m_Layer: 0
-  m_Name: VFXMoveSuggestion
+  m_Name: VFX_MoveSuggestion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
